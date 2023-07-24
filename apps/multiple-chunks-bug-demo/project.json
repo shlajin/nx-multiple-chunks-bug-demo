@@ -1,0 +1,98 @@
+{
+  "name": "multiple-chunks-bug-demo",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/multiple-chunks-bug-demo/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/multiple-chunks-bug-demo",
+        "index": "apps/multiple-chunks-bug-demo/src/index.html",
+        "baseHref": "/",
+        "main": "apps/multiple-chunks-bug-demo/src/main.tsx",
+        "tsConfig": "apps/multiple-chunks-bug-demo/tsconfig.app.json",
+        "assets": [
+          "apps/multiple-chunks-bug-demo/src/favicon.ico",
+          "apps/multiple-chunks-bug-demo/src/assets"
+        ],
+        "styles": ["apps/multiple-chunks-bug-demo/src/styles.css"],
+        "scripts": [],
+        "isolatedConfig": true,
+        "webpackConfig": "apps/multiple-chunks-bug-demo/webpack.config.js"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/multiple-chunks-bug-demo/src/environments/environment.ts",
+              "with": "apps/multiple-chunks-bug-demo/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/webpack:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "multiple-chunks-bug-demo:build",
+        "hmr": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "multiple-chunks-bug-demo:build:development"
+        },
+        "production": {
+          "buildTarget": "multiple-chunks-bug-demo:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "apps/multiple-chunks-bug-demo/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "multiple-chunks-bug-demo:build"
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/multiple-chunks-bug-demo/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}
